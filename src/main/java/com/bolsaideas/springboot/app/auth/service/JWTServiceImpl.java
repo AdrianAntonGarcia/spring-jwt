@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+
 import com.bolsaideas.springboot.app.auth.SimpleGrantedAuthorityMixin;
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -19,9 +21,13 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JWTServiceImpl implements JWTService {
+
+    public SecretKey keyJwt;
 
     @Override
     public String create(Authentication auth) throws IOException {
@@ -36,6 +42,7 @@ public class JWTServiceImpl implements JWTService {
         claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
 
         // JWT token
+        keyJwt = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         String token = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getUsername())
@@ -73,6 +80,7 @@ public class JWTServiceImpl implements JWTService {
     public Collection<? extends GrantedAuthority> getRoles(String token)
             throws StreamReadException, DatabindException, IOException {
         Object roles = getClaims(token);
+        System.out.println(roles);
         Collection<? extends GrantedAuthority> authorities = Arrays
                 .asList(new ObjectMapper()
                         .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)

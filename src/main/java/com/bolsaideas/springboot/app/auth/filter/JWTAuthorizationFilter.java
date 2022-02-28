@@ -34,7 +34,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
         UsernamePasswordAuthenticationToken authentication = null;
         if (jwtService.validate(header)) {
-
+            System.out.println("Validado");
             authentication = new UsernamePasswordAuthenticationToken(jwtService.getUsername(header), null,
                     jwtService.getRoles(header));
         }

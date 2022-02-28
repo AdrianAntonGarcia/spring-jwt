@@ -12,11 +12,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 
 public interface JWTService {
-    public static SecretKey keyJwt = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
     public String create(Authentication auth) throws IOException;
 
