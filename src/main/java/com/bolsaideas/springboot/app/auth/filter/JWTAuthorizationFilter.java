@@ -1,13 +1,21 @@
 package com.bolsaideas.springboot.app.auth.filter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import io.jsonwebtoken.Claims;
@@ -39,9 +47,16 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             e.printStackTrace();
             tokenValid = false;
         }
+        UsernamePasswordAuthenticationToken authentication = null;
         if (tokenValid) {
-
+            String username = tokenData.getSubject();
+            Object roles = tokenData.get("authorities");
+            Collection<? extends GrantedAuthority> authorities = Arrays
+                    .asList(new ObjectMapper().readValue(roles.toString().getBytes(), SimpleGrantedAuthority[].class));
+            authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
         }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        chain.doFilter(request, response);
     }
 
     protected boolean requiredAuthentication(String header) {
