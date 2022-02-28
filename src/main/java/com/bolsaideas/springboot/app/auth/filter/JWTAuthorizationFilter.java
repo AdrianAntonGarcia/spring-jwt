@@ -9,7 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.bolsaideas.springboot.app.auth.SimpleGrantedAuthoritiesMixin;
+import com.bolsaideas.springboot.app.auth.SimpleGrantedAuthorityMixin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -54,7 +54,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
             Object roles = tokenData.get("authorities");
             Collection<? extends GrantedAuthority> authorities = Arrays
                     .asList(new ObjectMapper()
-                            .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthoritiesMixin.class)
+                            .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)
                             .readValue(roles.toString().getBytes(), SimpleGrantedAuthority[].class));
             authentication = new UsernamePasswordAuthenticationToken(username, null, authorities);
         }

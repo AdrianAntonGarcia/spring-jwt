@@ -3,7 +3,7 @@ package com.bolsaideas.springboot.app.auth;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public abstract class SimpleGrantedAuthoritiesMixin {
+public abstract class SimpleGrantedAuthorityMixin {
 
     /**
      * El constructor de SimpleGrantedAuthorities no tiene constructor vacío, por lo
@@ -13,7 +13,7 @@ public abstract class SimpleGrantedAuthoritiesMixin {
      * @param role
      */
     @JsonCreator
-    public SimpleGrantedAuthoritiesMixin(@JsonProperty("authority") String role) {
+    public SimpleGrantedAuthorityMixin(@JsonProperty("authority") String role) {
     }
 
 }
