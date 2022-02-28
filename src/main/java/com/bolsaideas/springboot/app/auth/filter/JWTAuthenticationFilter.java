@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bolsaideas.springboot.app.models.entity.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,16 +41,37 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
+        /**
+         * Obteniendo los parametros por request params
+         */
         String username = obtainUsername(request);
         username = (username != null) ? username : "";
-        username = username.trim();
+
         String password = obtainPassword(request);
         password = (password != null) ? password : "";
 
-        if (username != null && password != null) {
+        if (username != "" && password != "") {
             logger.info("Username desde request parameter (form-data): " + username);
             logger.info("Password desde request parameter (form-data): " + password);
+        } else {
+            /**
+             * Si no vienen por query params los sacamos del body raw
+             * Convertimos Json a objeto
+             */
+            System.out.println("entro");
+            Usuario user = null;
+            try {
+                user = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
+                username = user.getUsername();
+                password = user.getPassword();
+                logger.info("Username desde request InputStream (raw): " + username);
+                logger.info("Password desde request InputStream (raw): " + password);
+            } catch (IOException e) {
+
+                e.printStackTrace();
+            }
         }
+        username = username.trim();
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password);
         return authenticationManager.authenticate(authToken);
