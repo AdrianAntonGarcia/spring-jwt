@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org">
+  <header th:replace="layout/layout :: head"></header>
+  <body>
+    <header th:replace="layout/layout :: navbar"></header>
+    <div class="container py-4">
+      <div class="card bg-secondary text-white">
+        <div class="card-header" th:text="${titulo}"></div>
+        <div class="card-body">
+          <div th:object="${cliente}" th:remove="tag">
+            <ul th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+              <li
+                th:each="error : ${#fields.errors('*')}"
+                th:text="${error}"
+              ></li>
+            </ul>
+          </div>
+          <form
+            th:action="@{/form}"
+            th:object="${cliente}"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            <div class="form-group row">
+              <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  th:field="*{nombre}"
+                  th:errorclass="'form-control alert-danger'"
+                  class="form-control"
+                />
+                <small
+                  class="form-text text-danger"
+                  th:if="${#fields.hasErrors('nombre')}"
+                  th:errors="*{nombre}"
+                >
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="apellido" class="col-sm-2 col-form-label"
+                >Apellido</label
+              >
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  th:field="*{apellido}"
+                  th:errorclass="'form-control alert-danger'"
+                  class="form-control"
+                />
+                <small
+                  class="form-text text-danger"
+                  th:if="${#fields.hasErrors('apellido')}"
+                  th:errors="*{apellido}"
+                >
+                </small>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="email" class="col-sm-2 col-form-label">Email</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  th:field="*{email}"
+                  th:errorclass="'form-control alert-danger'"
+                  class="form-control"
+                />
+                <small
+                  class="form-text text-danger"
+                  th:if="${#fields.hasErrors('email')}"
+                  th:errors="*{email}"
+                >
+                </small>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label">fecha</label>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  th:errorclass="'form-control alert-danger'"
+                  th:field="*{createdAt}"
+                />
+                <small
+                  class="form-text text-danger"
+                  th:if="${#fields.hasErrors('createdAt')}"
+                  th:errors="*{createdAt}"
+                >
+                </small>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="file" class="col-sm-2 col-form-label">Foto</label>
+              <div class="col-sm-6">
+                <input type="file" name="file" class="form-control" />
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-6">
+                <input
+                  type="submit"
+                  th:value="${(id != null) ? 'Editar cliente' : 'Crear cliente'}"
+                  class="btn btn-primary"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <footer th:replace="layout/layout :: footer"></footer>
+  </body>
+</html>
