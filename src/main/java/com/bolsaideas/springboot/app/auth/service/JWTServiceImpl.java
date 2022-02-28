@@ -79,11 +79,10 @@ public class JWTServiceImpl implements JWTService {
     @Override
     public Collection<? extends GrantedAuthority> getRoles(String token)
             throws StreamReadException, DatabindException, IOException {
-        Object roles = getClaims(token);
+        Object roles = getClaims(token).get("authorities");
         System.out.println(roles);
         Collection<? extends GrantedAuthority> authorities = Arrays
-                .asList(new ObjectMapper()
-                        .addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)
+                .asList(new ObjectMapper().addMixIn(SimpleGrantedAuthority.class, SimpleGrantedAuthorityMixin.class)
                         .readValue(roles.toString().getBytes(), SimpleGrantedAuthority[].class));
         return authorities;
     }
