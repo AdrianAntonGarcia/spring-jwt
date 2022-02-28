@@ -3,8 +3,6 @@ package com.bolsaideas.springboot.app.auth.service;
 import java.io.IOException;
 import java.util.Collection;
 
-import javax.crypto.SecretKey;
-
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 

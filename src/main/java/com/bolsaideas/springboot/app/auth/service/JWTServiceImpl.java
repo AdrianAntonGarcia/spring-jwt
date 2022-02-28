@@ -27,7 +27,14 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JWTServiceImpl implements JWTService {
 
-    public SecretKey keyJwt;
+    public static final SecretKey keyJwt = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+    // 4 horas
+    public static final long EXPIRATION_DATE = 14000000L;
+
+    public static final String TOKEN_PREFIX = "Bearer ";
+
+    public static final String HEADER_STRING = "Authorization";
 
     @Override
     public String create(Authentication auth) throws IOException {
@@ -42,13 +49,13 @@ public class JWTServiceImpl implements JWTService {
         claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
 
         // JWT token
-        keyJwt = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        // keyJwt = Keys.secretKeyFor(SignatureAlgorithm.HS512);
         String token = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getUsername())
                 .signWith(keyJwt)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000L * 4L))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_DATE))
                 .compact();
         return token;
     }
@@ -89,8 +96,8 @@ public class JWTServiceImpl implements JWTService {
 
     @Override
     public String resolve(String token) {
-        if (token != null && token.startsWith("Bearer ")) {
-            return token.replace("Bearer ", "");
+        if (token != null && token.startsWith(TOKEN_PREFIX)) {
+            return token.replace(TOKEN_PREFIX, "");
         } else {
             return null;
         }

@@ -27,8 +27,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private LoginSuccessHandler successHandler;
+	// @Autowired
+	// private LoginSuccessHandler successHandler;
 
 	// JDBC
 	// @Autowired

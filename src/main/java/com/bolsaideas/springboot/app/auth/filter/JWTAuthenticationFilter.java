@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.bolsaideas.springboot.app.auth.service.JWTService;
+import com.bolsaideas.springboot.app.auth.service.JWTServiceImpl;
 import com.bolsaideas.springboot.app.models.entity.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -81,7 +82,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
         String token = jwtService.create(authResult);
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader(JWTServiceImpl.HEADER_STRING, JWTServiceImpl.TOKEN_PREFIX + token);
         Map<String, Object> body = new HashMap<String, Object>();
         body.put("token", token);
         body.put("user", authResult.getName());
