@@ -7,6 +7,7 @@ import com.bolsaideas.springboot.app.auth.filter.JWTAuthorizationFilter;
 // import javax.sql.DataSource;
 
 import com.bolsaideas.springboot.app.auth.handler.LoginSuccessHandler;
+import com.bolsaideas.springboot.app.auth.service.JWTService;
 import com.bolsaideas.springboot.app.models.service.JpaUserDetailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private JWTService jwtService;
 
 	@Autowired
 	JpaUserDetailService userDetailService;
@@ -91,8 +95,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				// .and().formLogin()
 				// .successHandler(successHandler).loginPage("/login").permitAll().and().logout().permitAll().and()
 				// .exceptionHandling().accessDeniedPage("/error_403")
-				.and().addFilter(new JWTAuthenticationFilter(authenticationManager()))
-				.addFilter(new JWTAuthorizationFilter(authenticationManager())).csrf().disable()
+				.and().addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtService))
+				.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtService)).csrf().disable()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}

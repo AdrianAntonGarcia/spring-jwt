@@ -1,17 +1,15 @@
 package com.bolsaideas.springboot.app.auth.filter;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.bolsaideas.springboot.app.auth.service.JWTService;
 import com.bolsaideas.springboot.app.models.entity.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,15 +17,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 
 /**
  * Filtro que está pendiente de la ruta del login para autenticar al usuario y
@@ -36,10 +27,12 @@ import io.jsonwebtoken.security.Keys;
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
+    private JWTService jwtService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTService jwtService) {
         this.authenticationManager = authenticationManager;
         setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher("/api/login", "POST"));
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -87,28 +80,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
-        User user = ((User) authResult.getPrincipal());
-        // String token = Jwts.builder().setSubject(authResult.getName()).;
-        // La clave secreta se genera de forma automática
-
-        Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
-        Claims claims = Jwts.claims();
-        // Colocamos los roles como json
-        claims.put("authorities", new ObjectMapper().writeValueAsString(roles));
-
-        // JWT token
-        String token = Jwts.builder()
-                .setClaims(claims)
-                .setSubject(user.getUsername())
-                .signWith(SecretKeySave.getKeyJwt())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 3600000L * 4L))
-                .compact();
+        String token = jwtService.create(authResult);
         response.addHeader("Authorization", "Bearer " + token);
         Map<String, Object> body = new HashMap<String, Object>();
         body.put("token", token);
-        body.put("user", user);
-        body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!", user.getUsername()));
+        body.put("user", authResult.getName());
+        body.put("mensaje", String.format("Hola %s, has iniciado sesión con éxito!", authResult.getName()));
         // Convertimos a json
         response.getWriter().write(new ObjectMapper().writeValueAsString(body));
         response.setStatus(200);
