@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 /**
@@ -70,6 +71,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		/**
 		 * Reemplazamos lo comentado con anotaciones en los respectivos métodos
+		 * En vez de trabajar con sesiones ahora vamos a trabajar con json web tokens
+		 * Hay que deshabilitar el csrf .csrf().disable() y deshabilitamos el session
+		 * security police con
+		 * .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 		 */
 		http.authorizeRequests()
 				.antMatchers("/", "/css/**", "/js/**", "/images/**", "/listar**", "/locale", "/api/clientes/listar")
@@ -81,6 +86,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				/* .antMatchers("/factura/**").hasAnyRole("ADMIN") */
 				.anyRequest().authenticated().and().formLogin()
 				.successHandler(successHandler).loginPage("/login").permitAll().and().logout().permitAll().and()
-				.exceptionHandling().accessDeniedPage("/error_403");
+				.exceptionHandling().accessDeniedPage("/error_403").and().csrf().disable().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 }
