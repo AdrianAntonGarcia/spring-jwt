@@ -90,7 +90,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         User user = ((User) authResult.getPrincipal());
         // String token = Jwts.builder().setSubject(authResult.getName()).;
         // La clave secreta se genera de forma automática
-        SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
 
         Collection<? extends GrantedAuthority> roles = authResult.getAuthorities();
         Claims claims = Jwts.claims();
@@ -101,7 +100,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getUsername())
-                .signWith(secretKey)
+                .signWith(SecretKeySave.getKeyJwt())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000L * 4L))
                 .compact();

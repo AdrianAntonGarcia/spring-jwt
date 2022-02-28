@@ -2,6 +2,7 @@ package com.bolsaideas.springboot.app;
 // JDBC
 
 import com.bolsaideas.springboot.app.auth.filter.JWTAuthenticationFilter;
+import com.bolsaideas.springboot.app.auth.filter.JWTAuthorizationFilter;
 
 // import javax.sql.DataSource;
 
@@ -90,7 +91,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				// .and().formLogin()
 				// .successHandler(successHandler).loginPage("/login").permitAll().and().logout().permitAll().and()
 				// .exceptionHandling().accessDeniedPage("/error_403")
-				.and().addFilter(new JWTAuthenticationFilter(authenticationManager())).csrf().disable()
+				.and().addFilter(new JWTAuthenticationFilter(authenticationManager()))
+				.addFilter(new JWTAuthorizationFilter(authenticationManager())).csrf().disable()
 				.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
