@@ -3,18 +3,12 @@ package com.bolsaideas.springboot.app.controllers;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Collection;
-import java.util.List;
+//import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
-import com.bolsaideas.springboot.app.models.entity.Cliente;
-import com.bolsaideas.springboot.app.models.service.IClienteService;
-import com.bolsaideas.springboot.app.models.service.IUploadFileService;
-import com.bolsaideas.springboot.app.util.paginator.PageRender;
-import com.bolsaideas.springboot.app.view.xml.ClienteList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,6 +43,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.bolsaideas.springboot.app.models.entity.Cliente;
+import com.bolsaideas.springboot.app.models.service.IClienteService;
+import com.bolsaideas.springboot.app.models.service.IUploadFileService;
+import com.bolsaideas.springboot.app.util.paginator.PageRender;
+import com.bolsaideas.springboot.app.view.xml.ClienteList;
 
 /**
  * Guardamos el objeto cliente en sesión para tener el campo id que no vendría
@@ -181,8 +181,8 @@ public class ClienteController {
 	 * con @Valid
 	 * 
 	 * El @ModelAttribute solo es necesario si el nombre con el que lo pasamos a la
-	 * vista en el método anterior es distinto al que le
-	 * estamos dando (Nombre de la clase) en el método receptor del form
+	 * vista en el método anterior es distinto al que le estamos dando (Nombre de la
+	 * clase) en el método receptor del form
 	 * 
 	 * @param cliente
 	 * @param result
@@ -190,8 +190,8 @@ public class ClienteController {
 	 */
 	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/form", method = RequestMethod.POST)
-	public String guardar(@Valid @ModelAttribute(value = "cliente") Cliente clienteN, BindingResult result,
-			Model model, @RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
+	public String guardar(@Valid @ModelAttribute(value = "cliente") Cliente clienteN, BindingResult result, Model model,
+			@RequestParam("file") MultipartFile foto, RedirectAttributes flash, SessionStatus status) {
 		if (result.hasErrors()) {
 			model.addAttribute("titulo", "Formulario de Cliente");
 			return "form";
@@ -211,8 +211,7 @@ public class ClienteController {
 				e.printStackTrace();
 			}
 		}
-		String mensajeFlash = (clienteN.getId() != null) ? "Cliente editado con éxito!"
-				: "Cliente creado con éxito!";
+		String mensajeFlash = (clienteN.getId() != null) ? "Cliente editado con éxito!" : "Cliente creado con éxito!";
 		clienteService.save(clienteN);
 		status.setComplete();
 		flash.addFlashAttribute("success", mensajeFlash);

@@ -7,10 +7,10 @@
 		<version>2.6.3</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.bolsaideas.springboot.datajpaapp</groupId>
-	<artifactId>spring-boot-data-jpa</artifactId>
+	<groupId>com.bolsaideas.springboot.jwt.app</groupId>
+	<artifactId>spring-boot-jwt</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>spring-boot-data-jpa</name>
+	<name>spring-boot-jwt</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
